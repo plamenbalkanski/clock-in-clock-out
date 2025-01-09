@@ -14,14 +14,19 @@ namespace TimeClockApi.Models
             var data = dal.GetEmployeeEntries(employeeId);
             foreach (var dto in data)
             {
-                var entry = new TimeClockEntry();
-                LoadProperty(entry.IdProperty, dto.Id);
-                LoadProperty(entry.EmployeeIdProperty, dto.EmployeeId);
-                LoadProperty(entry.ClockInTimeProperty, dto.ClockInTime);
-                LoadProperty(entry.ClockOutTimeProperty, dto.ClockOutTime);
-                LoadProperty(entry.LocationProperty, dto.Location);
+                var entry = Child_Create();
+                entry.SetProperty(TimeClockEntry.IdProperty, dto.Id);
+                entry.SetProperty(TimeClockEntry.EmployeeIdProperty, dto.EmployeeId);
+                entry.SetProperty(TimeClockEntry.ClockInTimeProperty, dto.ClockInTime);
+                entry.SetProperty(TimeClockEntry.ClockOutTimeProperty, dto.ClockOutTime);
+                entry.SetProperty(TimeClockEntry.LocationProperty, dto.Location);
                 Add(entry);
             }
+        }
+
+        private TimeClockEntry Child_Create()
+        {
+            return DataPortal.CreateChild<TimeClockEntry>();
         }
     }
 } 
