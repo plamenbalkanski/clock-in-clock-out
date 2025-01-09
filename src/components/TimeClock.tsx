@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './TimeClock.css';
+import { config } from '../config';
 
 interface TimeClockProps {
     employeeId: number;
@@ -20,6 +21,11 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
 
+    console.log('Using API URL:', config.API_URL);  // Debug log
+    
+    // Replace process.env.REACT_APP_API_URL with config.API_URL
+    const API_URL = config.API_URL;
+
     // Add more detailed logging
     console.log('Environment variables:', {
         REACT_APP_API_URL: process.env.REACT_APP_API_URL,
@@ -27,7 +33,6 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
         all: process.env
     });
     
-    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
     console.log('Resolved API_URL:', API_URL);
 
     useEffect(() => {
@@ -62,11 +67,15 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const handleClockIn = async () => {
         try {
             setLoading(true);
-            // Try using request body instead of query parameters
             const url = `${API_URL}/api/timeclock/clockin`;
-            console.log('API URL:', API_URL);
-            console.log('Full URL:', url);
-            console.log('Request payload:', { employeeId, location });
+            
+            // Add these debug logs
+            console.log('Debug - API_URL at clock in:', API_URL);
+            console.log('Debug - Constructed URL:', url);
+            console.log('Debug - Environment:', {
+                REACT_APP_API_URL: process.env.REACT_APP_API_URL,
+                resolved: API_URL
+            });
 
             const response = await axios.post(url, { 
                 employeeId: employeeId,
