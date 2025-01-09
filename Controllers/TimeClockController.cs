@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TimeClockApi.DataAccess;
+using TimeClockApi.Models;
 
 namespace TimeClockApi.Controllers
 {

@@ -1,5 +1,6 @@
 using Csla;
 using System;
+using TimeClockApi.Dal;
 
 namespace TimeClockApi.Models
 {
