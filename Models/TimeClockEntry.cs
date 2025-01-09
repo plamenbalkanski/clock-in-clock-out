@@ -100,7 +100,6 @@ namespace TimeClockApi.Models
         private static readonly IDataPortal<TimeClockEntry> _portal = 
             Csla.ApplicationContext.GetRequiredService<IDataPortal<TimeClockEntry>>();
 
-        [Factory]
         private static TimeClockEntry CreateNew()
         {
             return new TimeClockEntry();
