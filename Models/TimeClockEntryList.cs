@@ -14,12 +14,12 @@ namespace TimeClockApi.Models
             var data = dal.GetEmployeeEntries(employeeId);
             foreach (var dto in data)
             {
-                var entry = Csla.ApplicationContext.CreateInstanceDirect<TimeClockEntry>();
-                entry.Id = dto.Id;
-                entry.EmployeeId = dto.EmployeeId;
-                entry.ClockInTime = dto.ClockInTime;
-                entry.ClockOutTime = dto.ClockOutTime;
-                entry.Location = dto.Location;
+                var entry = new TimeClockEntry();
+                LoadProperty(entry.IdProperty, dto.Id);
+                LoadProperty(entry.EmployeeIdProperty, dto.EmployeeId);
+                LoadProperty(entry.ClockInTimeProperty, dto.ClockInTime);
+                LoadProperty(entry.ClockOutTimeProperty, dto.ClockOutTime);
+                LoadProperty(entry.LocationProperty, dto.Location);
                 Add(entry);
             }
         }
