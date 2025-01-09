@@ -14,8 +14,8 @@ namespace TimeClockApi.Models
             var data = dal.GetEmployeeEntries(employeeId);
             foreach (var dto in data)
             {
-                var entry = Csla.DataPortal.CreateChild<TimeClockEntry>();
-                using (BypassPropertyChecks)
+                var entry = Factory.CreateChild<TimeClockEntry>();
+                using (base.BypassPropertyChecks)
                 {
                     entry.Id = dto.Id;
                     entry.EmployeeId = dto.EmployeeId;
