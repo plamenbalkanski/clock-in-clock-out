@@ -1,4 +1,4 @@
-using System.Data.SqlClient;
+using Npgsql;
 using Dapper;
 
 namespace TimeClockApi.Dal
@@ -14,27 +14,27 @@ namespace TimeClockApi.Dal
 
         public TimeClockEntryDto GetEntry(int id)
         {
-            using var conn = new SqlConnection(_connectionString);
+            using var conn = new NpgsqlConnection(_connectionString);
             return conn.QuerySingle<TimeClockEntryDto>(
-                "SELECT * FROM EmployeeTimeClock WHERE Id = @Id",
+                "SELECT * FROM employee_time_clock WHERE id = @Id",
                 new { Id = id });
         }
 
         public IEnumerable<TimeClockEntryDto> GetEmployeeEntries(int employeeId)
         {
-            using var conn = new SqlConnection(_connectionString);
+            using var conn = new NpgsqlConnection(_connectionString);
             return conn.Query<TimeClockEntryDto>(
-                "SELECT * FROM EmployeeTimeClock WHERE EmployeeId = @EmployeeId ORDER BY ClockInTime DESC",
+                "SELECT * FROM employee_time_clock WHERE employee_id = @EmployeeId ORDER BY clock_in_time DESC",
                 new { EmployeeId = employeeId });
         }
 
         public TimeClockEntryDto Insert(int employeeId, DateTime clockInTime, string location)
         {
-            using var conn = new SqlConnection(_connectionString);
+            using var conn = new NpgsqlConnection(_connectionString);
             var id = conn.ExecuteScalar<int>(
-                @"INSERT INTO EmployeeTimeClock (EmployeeId, ClockInTime, Location) 
-                  VALUES (@EmployeeId, @ClockInTime, @Location);
-                  SELECT SCOPE_IDENTITY()",
+                @"INSERT INTO employee_time_clock (employee_id, clock_in_time, location) 
+                  VALUES (@EmployeeId, @ClockInTime, @Location)
+                  RETURNING id",
                 new { EmployeeId = employeeId, ClockInTime = clockInTime, Location = location });
 
             return GetEntry(id);
@@ -42,9 +42,9 @@ namespace TimeClockApi.Dal
 
         public void Update(int id, DateTime clockOutTime)
         {
-            using var conn = new SqlConnection(_connectionString);
+            using var conn = new NpgsqlConnection(_connectionString);
             conn.Execute(
-                "UPDATE EmployeeTimeClock SET ClockOutTime = @ClockOutTime WHERE Id = @Id",
+                "UPDATE employee_time_clock SET clock_out_time = @ClockOutTime WHERE id = @Id",
                 new { Id = id, ClockOutTime = clockOutTime });
         }
     }

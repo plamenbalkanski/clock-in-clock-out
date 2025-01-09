@@ -11,6 +11,18 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddCsla();
 builder.Services.AddTransient<ITimeClockDal, TimeClockDal>();
 builder.Services.AddTransient<ITimeClockDataAccess, TimeClockDataAccess>();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(builder =>
+    {
+        builder.WithOrigins(
+            "YOUR_FRONTEND_URL", 
+            "http://localhost:3000"
+        )
+        .AllowAnyMethod()
+        .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -24,6 +36,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseCors();
 
 app.MapControllers();
 
