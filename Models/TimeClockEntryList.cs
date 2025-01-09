@@ -15,7 +15,7 @@ namespace TimeClockApi.Models
             var data = dal.GetEmployeeEntries(employeeId);
             foreach (var dto in data)
             {
-                var entry = TimeClockEntry.NewTimeClockEntry();
+                var entry = DataPortal.CreateChild<TimeClockEntry>();
                 entry.LoadFromDto(dto);
                 Add(entry);
             }
