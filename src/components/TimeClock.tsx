@@ -67,15 +67,10 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const handleClockIn = async () => {
         try {
             setLoading(true);
-            const url = `${API_URL}/api/timeclock/clockin`;
+            // Hardcode the URL directly for testing
+            const url = 'https://timeclock-api-wln9.onrender.com/api/timeclock/clockin';
             
-            // Add these debug logs
-            console.log('Debug - API_URL at clock in:', API_URL);
-            console.log('Debug - Constructed URL:', url);
-            console.log('Debug - Environment:', {
-                REACT_APP_API_URL: process.env.REACT_APP_API_URL,
-                resolved: API_URL
-            });
+            console.log('Debug - Using URL:', url);
 
             const response = await axios.post(url, { 
                 employeeId: employeeId,
@@ -94,17 +89,7 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
             setLoading(false);
             if (axios.isAxiosError(err)) {
                 const errorMessage = err.response?.data || err.message;
-                console.error('Clock in error:', {
-                    status: err.response?.status,
-                    statusText: err.response?.statusText,
-                    data: err.response?.data,
-                    config: {
-                        url: err.config?.url,
-                        method: err.config?.method,
-                        headers: err.config?.headers,
-                        data: err.config?.data
-                    }
-                });
+                console.error('Clock in error:', err);
                 setError(`Failed to clock in: ${errorMessage}`);
             } else {
                 console.error('Unknown error:', err);
