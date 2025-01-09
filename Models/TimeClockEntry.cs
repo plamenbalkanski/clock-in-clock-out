@@ -99,7 +99,7 @@ namespace TimeClockApi.Models
 
         public static TimeClockEntry NewTimeClockEntry()
         {
-            return Csla.Server.ObjectFactory.CreateObject<TimeClockEntry>();
+            return Csla.ApplicationContext.CreateInstance<TimeClockEntry>();
         }
 
         internal void LoadFromDto(TimeClockEntryDto dto)
