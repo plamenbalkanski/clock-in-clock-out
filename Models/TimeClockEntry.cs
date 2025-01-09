@@ -89,9 +89,12 @@ namespace TimeClockApi.Models
             }
         }
 
+        private static IDataPortal<TimeClockEntry> _portal = 
+            new Csla.DataPortal<TimeClockEntry>(Csla.ApplicationContext.CreateContext());
+
         public static async Task<TimeClockEntry> NewTimeClockEntry()
         {
-            return await Csla.DataPortal.CreateAsync<TimeClockEntry>();
+            return await _portal.CreateAsync();
         }
 
         internal void LoadFromDto(TimeClockEntryDto dto)
