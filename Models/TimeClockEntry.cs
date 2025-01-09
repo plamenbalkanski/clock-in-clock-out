@@ -43,7 +43,7 @@ namespace TimeClockApi.Models
             set => SetProperty(LocationProperty, value);
         }
 
-        private TimeClockEntry() { }  // Private constructor
+        public TimeClockEntry() { }  // Public constructor required by CSLA
 
         [Create]
         private void Create()
@@ -99,9 +99,11 @@ namespace TimeClockApi.Models
             }
         }
 
-        public static async Task<TimeClockEntry> NewTimeClockEntry()
+        public static TimeClockEntry NewTimeClockEntry()
         {
-            return await Csla.DataPortal.CreateChildAsync<TimeClockEntry>();
+            var entry = new TimeClockEntry();
+            entry.MarkAsChild();
+            return entry;
         }
 
         internal void LoadFromDto(TimeClockEntryDto dto)
