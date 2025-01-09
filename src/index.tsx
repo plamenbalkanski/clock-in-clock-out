@@ -11,4 +11,4 @@ root.render(
   <React.StrictMode>
     <TimeClock employeeId={1} />
   </React.StrictMode>
-); 
+);
