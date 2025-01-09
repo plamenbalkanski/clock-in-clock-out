@@ -18,28 +18,28 @@ namespace TimeClockApi.Models
         public int EmployeeId
         {
             get => GetProperty(EmployeeIdProperty);
-            private set => SetProperty(EmployeeIdProperty, value);
+            set => SetProperty(EmployeeIdProperty, value);
         }
 
         public static readonly PropertyInfo<DateTime> ClockInTimeProperty = RegisterProperty<DateTime>(nameof(ClockInTime));
         public DateTime ClockInTime
         {
             get => GetProperty(ClockInTimeProperty);
-            private set => SetProperty(ClockInTimeProperty, value);
+            set => SetProperty(ClockInTimeProperty, value);
         }
 
         public static readonly PropertyInfo<DateTime?> ClockOutTimeProperty = RegisterProperty<DateTime?>(nameof(ClockOutTime));
         public DateTime? ClockOutTime
         {
             get => GetProperty(ClockOutTimeProperty);
-            private set => SetProperty(ClockOutTimeProperty, value);
+            set => SetProperty(ClockOutTimeProperty, value);
         }
 
         public static readonly PropertyInfo<string> LocationProperty = RegisterProperty<string>(nameof(Location));
         public string Location
         {
             get => GetProperty(LocationProperty);
-            private set => SetProperty(LocationProperty, value);
+            set => SetProperty(LocationProperty, value);
         }
 
         [Create]

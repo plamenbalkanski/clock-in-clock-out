@@ -12,12 +12,15 @@ namespace TimeClockApi.Models
         private void Fetch(int employeeId, [Inject] ITimeClockDal dal)
         {
             var data = dal.GetEmployeeEntries(employeeId);
-            foreach (var item in data)
+            foreach (var dto in data)
             {
-                using (LoadListItem(item))
-                {
-                    Add(item);
-                }
+                var entry = DataPortal.CreateChild<TimeClockEntry>();
+                entry.Id = dto.Id;
+                entry.EmployeeId = dto.EmployeeId;
+                entry.ClockInTime = dto.ClockInTime;
+                entry.ClockOutTime = dto.ClockOutTime;
+                entry.Location = dto.Location;
+                Add(entry);
             }
         }
     }

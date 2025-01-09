@@ -29,8 +29,7 @@ namespace TimeClockApi.DataAccess
             entry.EmployeeId = employeeId;
             entry.ClockInTime = DateTime.UtcNow;
             entry.Location = location;
-            await entry.SaveAsync();
-            return entry;
+            return await entry.SaveAsync();
         }
 
         public async Task<TimeClockEntry> ClockOut(int employeeId)
@@ -42,8 +41,7 @@ namespace TimeClockApi.DataAccess
                 throw new InvalidOperationException("No active clock-in found");
 
             activeEntry.ClockOutTime = DateTime.UtcNow;
-            await activeEntry.SaveAsync();
-            return activeEntry;
+            return await activeEntry.SaveAsync();
         }
 
         public async Task<IEnumerable<TimeClockEntry>> GetEmployeeEntries(int employeeId)

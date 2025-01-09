@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using TimeClockApi.Dal;
 using TimeClockApi.DataAccess;
+using Csla.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
