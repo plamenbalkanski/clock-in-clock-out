@@ -54,14 +54,29 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const handleClockIn = async () => {
         try {
             setLoading(true);
-            await axios.post(`${API_URL}/api/timeclock/clockin?employeeId=${employeeId}&location=${encodeURIComponent(location || 'Unknown')}`);
+            const url = `${API_URL}/api/timeclock/clockin?employeeId=${employeeId}&location=${encodeURIComponent(location || 'Unknown')}`;
+            console.log('Attempting to clock in with URL:', url);  // Log the URL
+
+            const response = await axios.post(url);
+            console.log('Clock in response:', response.data);  // Log successful response
+
             setLoading(false);
             setError('Successfully clocked in!');
             fetchEntries();
         } catch (err) {
             setLoading(false);
-            setError('Failed to clock in. Please try again.');
-            console.error('Clock in error:', err);
+            if (axios.isAxiosError(err)) {
+                console.error('Clock in error details:', {
+                    message: err.message,
+                    response: err.response?.data,
+                    status: err.response?.status,
+                    headers: err.response?.headers
+                });
+                setError(`Failed to clock in: ${err.response?.data || err.message}`);
+            } else {
+                console.error('Non-Axios error:', err);
+                setError('Failed to clock in. Please try again.');
+            }
         }
     };
 
