@@ -77,7 +77,14 @@ namespace TimeClockApi.Models
         {
             using (BypassPropertyChecks)
             {
-                dal.Update(this.Id, this.ClockOutTime.Value);
+                if (this.ClockOutTime.HasValue)
+                {
+                    dal.Update(this.Id, this.ClockOutTime.Value);
+                }
+                else
+                {
+                    throw new InvalidOperationException("ClockOutTime must have a value");
+                }
             }
         }
     }
