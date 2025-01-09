@@ -54,27 +54,43 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const handleClockIn = async () => {
         try {
             setLoading(true);
-            const url = `${API_URL}/api/timeclock/clockin?employeeId=${employeeId}&location=${encodeURIComponent(location || 'Unknown')}`;
-            console.log('Attempting to clock in with URL:', url);  // Log the URL
+            // Try using request body instead of query parameters
+            const url = `${API_URL}/api/timeclock/clockin`;
+            console.log('API URL:', API_URL);
+            console.log('Full URL:', url);
+            console.log('Request payload:', { employeeId, location });
 
-            const response = await axios.post(url);
-            console.log('Clock in response:', response.data);  // Log successful response
+            const response = await axios.post(url, { 
+                employeeId: employeeId,
+                location: location || 'Unknown'
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
 
+            console.log('Response:', response);
             setLoading(false);
             setError('Successfully clocked in!');
             fetchEntries();
         } catch (err) {
             setLoading(false);
             if (axios.isAxiosError(err)) {
-                console.error('Clock in error details:', {
-                    message: err.message,
-                    response: err.response?.data,
+                const errorMessage = err.response?.data || err.message;
+                console.error('Clock in error:', {
                     status: err.response?.status,
-                    headers: err.response?.headers
+                    statusText: err.response?.statusText,
+                    data: err.response?.data,
+                    config: {
+                        url: err.config?.url,
+                        method: err.config?.method,
+                        headers: err.config?.headers,
+                        data: err.config?.data
+                    }
                 });
-                setError(`Failed to clock in: ${err.response?.data || err.message}`);
+                setError(`Failed to clock in: ${errorMessage}`);
             } else {
-                console.error('Non-Axios error:', err);
+                console.error('Unknown error:', err);
                 setError('Failed to clock in. Please try again.');
             }
         }
