@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(builder =>
     {
         builder.WithOrigins(
-            "YOUR_FRONTEND_URL", 
+            "https://timeclock-frontend.onrender.com", 
             "http://localhost:3000"
         )
         .AllowAnyMethod()
