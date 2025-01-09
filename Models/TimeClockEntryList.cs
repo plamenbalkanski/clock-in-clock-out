@@ -10,12 +10,12 @@ namespace TimeClockApi.Models
     public class TimeClockEntryList : BusinessListBase<TimeClockEntryList, TimeClockEntry>
     {
         [Fetch]
-        private async Task Fetch(int employeeId, [Inject] ITimeClockDal dal)
+        private void Fetch(int employeeId, [Inject] ITimeClockDal dal)
         {
             var data = dal.GetEmployeeEntries(employeeId);
             foreach (var dto in data)
             {
-                var entry = await TimeClockEntry.NewTimeClockEntry();
+                var entry = TimeClockEntry.NewTimeClockEntry();
                 entry.LoadFromDto(dto);
                 Add(entry);
             }
