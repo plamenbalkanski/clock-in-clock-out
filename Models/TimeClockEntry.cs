@@ -48,14 +48,12 @@ namespace TimeClockApi.Models
         [Create]
         private void Create()
         {
-            // Creation rules here if needed
             MarkAsChild();
         }
 
         [CreateChild]
         private void CreateChild()
         {
-            // Child creation rules here if needed
             MarkAsChild();
         }
 
@@ -101,9 +99,7 @@ namespace TimeClockApi.Models
 
         public static TimeClockEntry NewTimeClockEntry()
         {
-            var entry = new TimeClockEntry();
-            entry.MarkAsChild();
-            return entry;
+            return Csla.Server.ObjectFactory.CreateObject<TimeClockEntry>();
         }
 
         internal void LoadFromDto(TimeClockEntryDto dto)
