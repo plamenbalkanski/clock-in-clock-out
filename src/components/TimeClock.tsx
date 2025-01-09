@@ -6,6 +6,8 @@ interface TimeClockProps {
     employeeId: number;
 }
 
+const API_URL = 'https://timeclock-api-wln9.onrender.com';
+
 const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const [location, setLocation] = useState<string>('');
     const [entries, setEntries] = useState<any[]>([]);
@@ -27,6 +29,23 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
         } catch (err) {
             setError('Failed to fetch entries');
             console.error('Fetch error:', err);
+        }
+    };
+
+    const handleClockIn = async () => {
+        try {
+            setLoading(true);
+            await axios.post(`${API_URL}/api/timeclock/clockin`, {
+                employeeId,
+                location: location || 'Unknown'
+            });
+            setLoading(false);
+            setError('Successfully clocked in!');
+            fetchEntries();
+        } catch (err) {
+            setLoading(false);
+            setError('Failed to clock in. Please try again.');
+            console.error('Clock in error:', err);
         }
     };
 
