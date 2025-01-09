@@ -23,7 +23,7 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const fetchEntries = async () => {
         try {
             const response = await axios.get(
-                `https://timeclock-api-wln9.onrender.com/api/timeclock/employee/${employeeId}`
+                `${API_URL}/api/timeclock/employee/${employeeId}`
             );
             setEntries(response.data);
         } catch (err) {
@@ -53,7 +53,7 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
         try {
             setLoading(true);
             await axios.post(
-                `https://timeclock-api-wln9.onrender.com/api/timeclock/clockout/${employeeId}`
+                `${API_URL}/api/timeclock/clockout/${employeeId}`
             );
             setLoading(false);
             setError('Successfully clocked out!');
