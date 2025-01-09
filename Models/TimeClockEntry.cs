@@ -97,10 +97,12 @@ namespace TimeClockApi.Models
             }
         }
 
+        private static readonly IDataPortal<TimeClockEntry> _portal = 
+            Csla.DataPortalFactory.CreateChild<TimeClockEntry>();
+
         public static TimeClockEntry NewTimeClockEntry()
         {
-            var portal = new Csla.DataPortal<TimeClockEntry>();
-            return portal.CreateChild();
+            return _portal.Create();
         }
 
         internal void LoadFromDto(TimeClockEntryDto dto)
