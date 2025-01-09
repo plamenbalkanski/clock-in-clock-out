@@ -20,8 +20,15 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
 
+    // Add more detailed logging
+    console.log('Environment variables:', {
+        REACT_APP_API_URL: process.env.REACT_APP_API_URL,
+        NODE_ENV: process.env.NODE_ENV,
+        all: process.env
+    });
+    
     const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-    console.log('Current API_URL:', API_URL);
+    console.log('Resolved API_URL:', API_URL);
 
     useEffect(() => {
         if (employeeId) {
