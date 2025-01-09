@@ -6,31 +6,43 @@ interface TimeClockProps {
     employeeId: number;
 }
 
-const API_URL = 'https://timeclock-api-wln9.onrender.com';  // Hardcode at the top level
-
 const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const [location, setLocation] = useState<string>('');
     const [entries, setEntries] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const handleClockIn = async () => {
+    useEffect(() => {
+        if (employeeId) {
+            fetchEntries();
+        }
+    }, [employeeId]);
+
+    const fetchEntries = async () => {
+        try {
+            const response = await axios.get(
+                `https://timeclock-api-wln9.onrender.com/api/timeclock/employee/${employeeId}`
+            );
+            setEntries(response.data);
+        } catch (err) {
+            setError('Failed to fetch entries');
+            console.error('Fetch error:', err);
+        }
+    };
+
+    const handleClockOut = async () => {
         try {
             setLoading(true);
-            const response = await axios.post(
-                `${API_URL}/api/timeclock/clockin`,
-                {
-                    employeeId,
-                    location: location || 'Unknown'
-                }
+            await axios.post(
+                `https://timeclock-api-wln9.onrender.com/api/timeclock/clockout/${employeeId}`
             );
             setLoading(false);
-            setError('Successfully clocked in!');
+            setError('Successfully clocked out!');
             fetchEntries();
         } catch (err) {
             setLoading(false);
-            setError('Failed to clock in. Please try again.');
-            console.error(err);
+            setError('Failed to clock out. Please try again.');
+            console.error('Clock out error:', err);
         }
     };
 
