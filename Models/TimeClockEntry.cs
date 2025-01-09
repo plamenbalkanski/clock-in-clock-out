@@ -43,16 +43,20 @@ namespace TimeClockApi.Models
             set => SetProperty(LocationProperty, value);
         }
 
+        private TimeClockEntry() { }  // Private constructor
+
         [Create]
         private void Create()
         {
             // Creation rules here if needed
+            MarkAsChild();
         }
 
         [CreateChild]
         private void CreateChild()
         {
             // Child creation rules here if needed
+            MarkAsChild();
         }
 
         [Fetch]
@@ -95,11 +99,9 @@ namespace TimeClockApi.Models
             }
         }
 
-        public static TimeClockEntry NewTimeClockEntry()
+        public static async Task<TimeClockEntry> NewTimeClockEntry()
         {
-            var entry = new TimeClockEntry();
-            entry.MarkAsChild();
-            return entry;
+            return await Csla.DataPortal.CreateChildAsync<TimeClockEntry>();
         }
 
         internal void LoadFromDto(TimeClockEntryDto dto)
