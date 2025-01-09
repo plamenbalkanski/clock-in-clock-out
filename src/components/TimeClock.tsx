@@ -28,28 +28,55 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
         }
     }, [employeeId, fetchEntries]);
 
+    useEffect(() => {
+        // Get user's location when component mounts
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                    try {
+                        const response = await axios.get(
+                            `https://api.opencagedata.com/geocode/v1/json?q=${position.coords.latitude}+${position.coords.longitude}&key=YOUR_OPENCAGE_API_KEY`
+                        );
+                        const city = response.data.results[0]?.components.city || 'Unknown';
+                        setLocation(city);
+                    } catch (error) {
+                        setLocation('Location unavailable');
+                    }
+                },
+                () => {
+                    setLocation('Location access denied');
+                }
+            );
+        }
+        fetchEntries();
+    }, [employeeId]);
+
     const handleClockIn = async () => {
         try {
             setLoading(true);
-            await axios.post(`${API_URL}/clockin`, { employeeId, location });
-            fetchEntries();
-            setLocation(''); // Clear location after successful clock in
-        } catch (err) {
-            setError('Failed to clock in');
-        } finally {
+            await axios.post(`${API_URL}/api/timeclock/clockin`, {
+                employeeId,
+                location: location || 'Unknown'
+            });
             setLoading(false);
+            setError('Successfully clocked in!');
+            fetchEntries();
+        } catch (err) {
+            setLoading(false);
+            setError('Failed to clock in. Please try again.');
         }
     };
 
     const handleClockOut = async () => {
         try {
             setLoading(true);
-            await axios.post(`${API_URL}/clockout`, { employeeId });
-            fetchEntries();
-        } catch (err) {
-            setError('Failed to clock out');
-        } finally {
+            await axios.post(`${API_URL}/api/timeclock/clockout/${employeeId}`);
             setLoading(false);
+            setError('Successfully clocked out!');
+            fetchEntries();
+        } catch (error) {
+            setLoading(false);
+            setError('Failed to clock out. Please try again.');
         }
     };
 
@@ -64,40 +91,48 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
 
     return (
         <div className="time-clock-container">
-            <h1>Employee Time Clock</h1>
-            
-            <div className="input-group">
-                <input
-                    type="text"
-                    value={location}
-                    onChange={(e) => setLocation(e.target.value)}
-                    placeholder="Location"
-                />
-            </div>
-
-            <div className="button-group">
-                <button onClick={handleClockIn} disabled={loading || !location}>
+            <h1>Time Clock</h1>
+            <div className="button-container">
+                <button 
+                    className={`button clock-in ${loading ? 'loading' : ''}`}
+                    onClick={handleClockIn}
+                    disabled={loading}
+                >
                     Clock In
                 </button>
-                <button onClick={handleClockOut} disabled={loading}>
+                <button 
+                    className={`button clock-out ${loading ? 'loading' : ''}`}
+                    onClick={handleClockOut}
+                    disabled={loading}
+                >
                     Clock Out
                 </button>
             </div>
-
-            {error && <div className="error">{error}</div>}
-
-            <div className="entries-list">
-                <h2>Recent Entries</h2>
-                {entries.map(entry => (
-                    <div key={entry.id} className="entry">
-                        <p>Clock In: {new Date(entry.clockInTime).toLocaleString()}</p>
-                        {entry.clockOutTime && (
-                            <p>Clock Out: {new Date(entry.clockOutTime).toLocaleString()}</p>
-                        )}
-                        <p>Location: {entry.location}</p>
-                    </div>
-                ))}
-            </div>
+            {error && (
+                <div className="error">
+                    {error}
+                </div>
+            )}
+            <table className="entries-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Clock In</th>
+                        <th>Clock Out</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {entries.map((entry) => (
+                        <tr key={entry.id}>
+                            <td>{new Date(entry.clockInTime).toLocaleDateString()}</td>
+                            <td>{new Date(entry.clockInTime).toLocaleTimeString()}</td>
+                            <td>{entry.clockOutTime ? new Date(entry.clockOutTime).toLocaleTimeString() : '-'}</td>
+                            <td>{entry.location}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
 };
