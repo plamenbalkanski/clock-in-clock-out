@@ -20,7 +20,7 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
 
-    const API_URL = 'https://timeclock-api-wln9.onrender.com';
+    const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
     console.log('Current API_URL:', API_URL);
 
     useEffect(() => {
