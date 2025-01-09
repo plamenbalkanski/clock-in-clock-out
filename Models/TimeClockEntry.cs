@@ -1,6 +1,7 @@
 using Csla;
 using System;
 using TimeClockApi.Dal;
+using System.Threading.Tasks;
 
 namespace TimeClockApi.Models
 {
@@ -88,10 +89,9 @@ namespace TimeClockApi.Models
             }
         }
 
-        public static TimeClockEntry NewTimeClockEntry()
+        public static async Task<TimeClockEntry> NewTimeClockEntry()
         {
-            var portal = new Csla.DataPortal<TimeClockEntry>();
-            return portal.Create();
+            return await Csla.DataPortal.CreateAsync<TimeClockEntry>();
         }
 
         internal void LoadFromDto(TimeClockEntryDto dto)
