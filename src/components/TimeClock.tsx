@@ -54,16 +54,14 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const handleClockIn = async () => {
         try {
             setLoading(true);
-            await axios.post(`${API_URL}/api/timeclock/clockin`, {
-                employeeId,
-                location: location || 'Unknown'
-            });
+            await axios.post(`${API_URL}/api/timeclock/clockin?employeeId=${employeeId}&location=${encodeURIComponent(location || 'Unknown')}`);
             setLoading(false);
             setError('Successfully clocked in!');
             fetchEntries();
         } catch (err) {
             setLoading(false);
             setError('Failed to clock in. Please try again.');
+            console.error('Clock in error:', err);
         }
     };
 
@@ -82,10 +80,11 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
 
     const fetchEntries = async () => {
         try {
-            const response = await axios.get<TimeClockEntry[]>(`${API_URL}/employee/${employeeId}`);
+            const response = await axios.get<TimeClockEntry[]>(`${API_URL}/api/timeclock/employee/${employeeId}`);
             setEntries(response.data);
         } catch (err) {
             setError('Failed to fetch entries');
+            console.error('Fetch entries error:', err);
         }
     };
 
