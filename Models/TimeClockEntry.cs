@@ -87,5 +87,22 @@ namespace TimeClockApi.Models
                 }
             }
         }
+
+        public static TimeClockEntry NewTimeClockEntry()
+        {
+            return DataPortal.CreateChild<TimeClockEntry>();
+        }
+
+        internal void LoadFromDto(TimeClockEntryDto dto)
+        {
+            using (BypassPropertyChecks)
+            {
+                Id = dto.Id;
+                EmployeeId = dto.EmployeeId;
+                ClockInTime = dto.ClockInTime;
+                ClockOutTime = dto.ClockOutTime;
+                Location = dto.Location;
+            }
+        }
     }
 } 
