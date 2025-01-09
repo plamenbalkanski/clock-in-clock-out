@@ -61,14 +61,7 @@ namespace TimeClockApi.Models
         private void Fetch(int id, [Inject] ITimeClockDal dal)
         {
             var data = dal.GetEntry(id);
-            using (BypassPropertyChecks)
-            {
-                Id = data.Id;
-                EmployeeId = data.EmployeeId;
-                ClockInTime = data.ClockInTime;
-                ClockOutTime = data.ClockOutTime;
-                Location = data.Location;
-            }
+            LoadFromDto(data);
         }
 
         [Insert]
@@ -95,21 +88,6 @@ namespace TimeClockApi.Models
                     throw new InvalidOperationException("ClockOutTime must have a value");
                 }
             }
-        }
-
-        private static readonly IDataPortal<TimeClockEntry> _portal = 
-            Csla.ApplicationContext.GetRequiredService<IDataPortal<TimeClockEntry>>();
-
-        private static TimeClockEntry CreateNew()
-        {
-            return new TimeClockEntry();
-        }
-
-        public static TimeClockEntry NewTimeClockEntry()
-        {
-            var entry = CreateNew();
-            entry.MarkAsChild();
-            return entry;
         }
 
         internal void LoadFromDto(TimeClockEntryDto dto)
