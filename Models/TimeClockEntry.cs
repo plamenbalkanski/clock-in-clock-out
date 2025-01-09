@@ -97,8 +97,9 @@ namespace TimeClockApi.Models
 
         public static TimeClockEntry NewTimeClockEntry()
         {
-            var factory = new ObjectFactory();
-            return factory.Create<TimeClockEntry>();
+            var entry = new TimeClockEntry();
+            entry.MarkAsChild();
+            return entry;
         }
 
         internal void LoadFromDto(TimeClockEntryDto dto)
