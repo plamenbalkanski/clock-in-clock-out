@@ -49,6 +49,12 @@ namespace TimeClockApi.Models
             // Creation rules here if needed
         }
 
+        [CreateChild]
+        private void CreateChild()
+        {
+            // Child creation rules here if needed
+        }
+
         [Fetch]
         private void Fetch(int id, [Inject] ITimeClockDal dal)
         {
@@ -89,12 +95,9 @@ namespace TimeClockApi.Models
             }
         }
 
-        private static IDataPortal<TimeClockEntry> _portal = 
-            new Csla.DataPortal<TimeClockEntry>(Csla.ApplicationContext.CreateContext());
-
-        public static async Task<TimeClockEntry> NewTimeClockEntry()
+        public static TimeClockEntry NewTimeClockEntry()
         {
-            return await _portal.CreateAsync();
+            return BusinessBase<TimeClockEntry>.Factory.CreateChild();
         }
 
         internal void LoadFromDto(TimeClockEntryDto dto)
