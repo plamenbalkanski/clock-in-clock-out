@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { config } from '../config';
 import './TimeClock.css';
 
 interface TimeClockProps {
     employeeId: number;
 }
-
-const API_URL = 'https://timeclock-api-wln9.onrender.com';
 
 const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const [location, setLocation] = useState<string>('');
@@ -23,7 +22,7 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const fetchEntries = async () => {
         try {
             const response = await axios.get(
-                `${API_URL}/api/timeclock/employee/${employeeId}`
+                `${config.API_URL}/api/timeclock/employee/${employeeId}`
             );
             setEntries(response.data);
         } catch (err) {
@@ -35,7 +34,7 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
     const handleClockIn = async () => {
         try {
             setLoading(true);
-            await axios.post(`${API_URL}/api/timeclock/clockin`, {
+            await axios.post(`${config.API_URL}/api/timeclock/clockin`, {
                 employeeId,
                 location: location || 'Unknown'
             });
@@ -53,7 +52,7 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
         try {
             setLoading(true);
             await axios.post(
-                `${API_URL}/api/timeclock/clockout/${employeeId}`
+                `${config.API_URL}/api/timeclock/clockout/${employeeId}`
             );
             setLoading(false);
             setError('Successfully clocked out!');
@@ -65,7 +64,52 @@ const TimeClock: React.FC<TimeClockProps> = ({ employeeId }) => {
         }
     };
 
-    // ... rest of the component
+    return (
+        <div className="time-clock-container">
+            <h1>Time Clock</h1>
+            <div className="button-container">
+                <button 
+                    className={`button clock-in ${loading ? 'loading' : ''}`}
+                    onClick={handleClockIn}
+                    disabled={loading}
+                >
+                    Clock In
+                </button>
+                <button 
+                    className={`button clock-out ${loading ? 'loading' : ''}`}
+                    onClick={handleClockOut}
+                    disabled={loading}
+                >
+                    Clock Out
+                </button>
+            </div>
+            {error && (
+                <div className={`message ${error.includes('Failed') ? 'error' : 'success'}`}>
+                    {error}
+                </div>
+            )}
+            <table className="entries-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Clock In</th>
+                        <th>Clock Out</th>
+                        <th>Location</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {entries.map((entry) => (
+                        <tr key={entry.id}>
+                            <td>{new Date(entry.clockInTime).toLocaleDateString()}</td>
+                            <td>{new Date(entry.clockInTime).toLocaleTimeString()}</td>
+                            <td>{entry.clockOutTime ? new Date(entry.clockOutTime).toLocaleTimeString() : '-'}</td>
+                            <td>{entry.location}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
 };
 
 export default TimeClock; 
